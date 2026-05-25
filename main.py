@@ -4,10 +4,8 @@ import hashlib
 import pandas as pd
 from datetime import datetime
 
-# Configuração da página
 st.set_page_config(page_title="Dashboard Sicoob", layout="wide")
 
-# Funções de banco de dados
 def create_connection():
     """Cria conexão com o banco de dados"""
     return sqlite3.connect("banco.db", check_same_thread=False)
@@ -17,13 +15,10 @@ def create_tables():
     conexao = create_connection()
     cursor = conexao.cursor()
     
-    # Verifica se a tabela existe e se tem a estrutura correta
     cursor.execute("PRAGMA table_info(users)")
     columns = [column[1] for column in cursor.fetchall()]
     
-    # Se não tiver as colunas de autenticação, recria a tabela
     if not columns or 'username' not in columns or 'password' not in columns:
-        # Recria a tabela com a nova estrutura
         cursor.execute("DROP TABLE IF EXISTS users")
         cursor.execute('''
             CREATE TABLE users (
@@ -37,7 +32,6 @@ def create_tables():
         ''')
         print("Banco de dados atualizado para nova estrutura com autenticação!")
     else:
-        # Apenas cria se não existir
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -123,10 +117,8 @@ def update_user_saldo(username, novo_saldo):
     conexao.commit()
     conexao.close()
 
-# Inicializa banco de dados
 create_tables()
 
-# Gerenciamento de sessão
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'username' not in st.session_state:
@@ -134,19 +126,16 @@ if 'username' not in st.session_state:
 if 'user_data' not in st.session_state:
     st.session_state['user_data'] = None
 
-# Função de logout
 def logout():
     st.session_state['logged_in'] = False
     st.session_state['username'] = ''
     st.session_state['user_data'] = None
     st.rerun()
 
-# Tela de Login
 def login_screen():
     st.title("🔐 Dashboard Sicoob - Login")
     st.markdown("### Faça login para acessar seu dashboard financeiro")
     
-    # Criar abas para Login e Cadastro
     tab1, tab2 = st.tabs(["🔑 Login", "📝 Cadastro"])
     
     with tab1:
@@ -191,9 +180,7 @@ def login_screen():
                 else:
                     st.error(mensagem)
 
-# Dashboard Principal (apenas para usuários logados)
 def dashboard_screen():
-    # Sidebar com informações do usuário e logout
     with st.sidebar:
         st.title("👤 Perfil")
         if st.session_state['user_data']:
@@ -208,13 +195,11 @@ def dashboard_screen():
         if st.button("🚪 Sair / Logout", type="secondary", on_click=logout):
             pass
     
-    # Conteúdo principal do dashboard
     st.title("📊 Dashboard Sicoob")
     st.subheader(f"Bem-vindo ao seu dashboard financeiro, {st.session_state['user_data'][3] if st.session_state['user_data'] else ''}!")
     
     st.divider()
     
-    # Métricas principais
     col1, col2, col3 = st.columns(3)
     
     if st.session_state['user_data']:
@@ -225,7 +210,6 @@ def dashboard_screen():
     
     st.divider()
     
-    # Seção de operações
     st.header("💰 Operações Financeiras")
     
     col1, col2 = st.columns(2)
@@ -269,7 +253,6 @@ def dashboard_screen():
     
     st.divider()
     
-    # Histórico e informações adicionais
     st.header("📋 Informações da Conta")
     
     if st.session_state['user_data']:
@@ -283,7 +266,6 @@ def dashboard_screen():
         
         st.json(user_info)
 
-# Controle de fluxo principal
 def main():
     if st.session_state['logged_in']:
         dashboard_screen()
