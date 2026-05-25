@@ -256,15 +256,63 @@ def dashboard_screen():
     st.header("📋 Informações da Conta")
     
     if st.session_state['user_data']:
-        user_info = {
-            'ID': st.session_state['user_data'][0],
-            'Usuário': st.session_state['user_data'][1],
-            'Nome Completo': st.session_state['user_data'][3],
-            'Saldo Atual': f"R$ {st.session_state['user_data'][4]:,.2f}",
-            'Data de Cadastro': st.session_state['user_data'][5]
-        }
+        user_id = st.session_state['user_data'][0]
+        username = st.session_state['user_data'][1]
+        nome = st.session_state['user_data'][3]
+        saldo = st.session_state['user_data'][4]
+        created_at = st.session_state['user_data'][5]
         
-        st.json(user_info)
+        # Formatando a data de cadastro
+        try:
+            data_cadastro = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S.%f") if "." in str(created_at) else datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
+            data_formatada = data_cadastro.strftime("%d/%m/%Y às %H:%M")
+        except:
+            data_formatada = created_at
+        
+        # Primeira linha de cards - ID e Usuário
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown(f"""
+                <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #1f77b4; margin-bottom: 10px;'>
+                    <h4 style='margin: 0; color: #666; font-size: 14px;'>🆔 ID do Usuário</h4>
+                    <p style='margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #1f77b4;'>{user_id}</p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+                <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #ff7b00; margin-bottom: 10px;'>
+                    <h4 style='margin: 0; color: #666; font-size: 14px;'>👤 Nome de Usuário</h4>
+                    <p style='margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #ff7b00;'>{username}</p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        # Segunda linha - Nome Completo
+        col3, col4 = st.columns([3, 1])
+        with col3:
+            st.markdown(f"""
+                <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #2ca02c; margin-bottom: 10px;'>
+                    <h4 style='margin: 0; color: #666; font-size: 14px;'>📛 Nome Completo</h4>
+                    <p style='margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #2ca02c;'>{nome}</p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        # Terceira linha - Saldo em destaque
+        st.markdown(f"""
+            <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 15px; margin: 20px 0; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);'>
+                <h4 style='margin: 0; color: rgba(255,255,255,0.9); font-size: 18px;'>💰 Saldo Atual</h4>
+                <p style='margin: 10px 0 0 0; font-size: 48px; font-weight: bold; color: #ffffff;'>R$ {saldo:,.2f}</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Quarta linha - Data de Cadastro
+        st.markdown(f"""
+            <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #d62728; margin-bottom: 10px;'>
+                <h4 style='margin: 0; color: #666; font-size: 14px;'>📅 Data de Cadastro</h4>
+                <p style='margin: 5px 0 0 0; font-size: 20px; font-weight: bold; color: #d62728;'>{data_formatada}</p>
+                <p style='margin: 5px 0 0 0; font-size: 14px; color: #888;'>Membro desde {data_formatada}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 def main():
     if st.session_state['logged_in']:
