@@ -133,10 +133,10 @@ def logout():
     st.rerun()
 
 def login_screen():
-    st.title("🔐 Dashboard Sicoob - Login")
+    st.title(" Dashboard Sicoob - Login")
     st.markdown("### Faça login para acessar seu dashboard financeiro")
     
-    tab1, tab2 = st.tabs(["🔑 Login", "📝 Cadastro"])
+    tab1, tab2 = st.tabs([" Login", " Cadastro"])
     
     with tab1:
         st.subheader("Acessar Conta")
@@ -182,17 +182,17 @@ def login_screen():
 
 def dashboard_screen():
     with st.sidebar:
-        st.title("👤 Perfil")
+        st.title("Perfil")
         if st.session_state['user_data']:
             user_id, username, _, nome, saldo, created_at = st.session_state['user_data']
             st.write(f"**Usuário:** {username}")
             st.write(f"**Nome:** {nome}")
             st.write(f"**Saldo:** R$ {saldo:,.2f}")
             st.divider()
-            st.info(f"📅 Membro desde: {created_at}")
+            st.info(f"Membro desde: {created_at}")
         
         st.divider()
-        if st.button("🚪 Sair / Logout", type="secondary", on_click=logout):
+        if st.button(" Sair / Logout", type="secondary", on_click=logout):
             pass
     
     st.title("📊 Dashboard Sicoob")
@@ -210,7 +210,7 @@ def dashboard_screen():
     
     st.divider()
     
-    st.header("💰 Operações Financeiras")
+    st.header(" Operações Financeiras")
     
     col1, col2 = st.columns(2)
     
@@ -223,7 +223,7 @@ def dashboard_screen():
             key="deposito_valor"
         )
         
-        if st.button("💵 Depositar", type="primary", key="depositar_btn"):
+        if st.button(" Depositar", type="primary", key="depositar_btn"):
             if valor_deposito > 0:
                 novo_saldo = user_saldo + valor_deposito
                 update_user_saldo(st.session_state['username'], novo_saldo)
@@ -240,7 +240,7 @@ def dashboard_screen():
             key="saque_valor"
         )
         
-        if st.button("💸 Sacar", type="primary", key="sacar_btn"):
+        if st.button(" Sacar", type="primary", key="sacar_btn"):
             if valor_saque > 0:
                 if valor_saque <= user_saldo:
                     novo_saldo = user_saldo - valor_saque
@@ -253,7 +253,7 @@ def dashboard_screen():
     
     st.divider()
     
-    st.header("📋 Informações da Conta")
+    st.header(" Informações da Conta")
     
     if st.session_state['user_data']:
         user_id = st.session_state['user_data'][0]
@@ -262,14 +262,12 @@ def dashboard_screen():
         saldo = st.session_state['user_data'][4]
         created_at = st.session_state['user_data'][5]
         
-        # Formatando a data de cadastro
         try:
             data_cadastro = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S.%f") if "." in str(created_at) else datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
             data_formatada = data_cadastro.strftime("%d/%m/%Y às %H:%M")
         except:
             data_formatada = created_at
         
-        # Primeira linha de cards - ID e Usuário
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(f"""
@@ -287,7 +285,6 @@ def dashboard_screen():
                 </div>
             """, unsafe_allow_html=True)
         
-        # Segunda linha - Nome Completo
         col3, col4 = st.columns([3, 1])
         with col3:
             st.markdown(f"""
@@ -297,7 +294,6 @@ def dashboard_screen():
                 </div>
             """, unsafe_allow_html=True)
         
-        # Terceira linha - Saldo em destaque
         st.markdown(f"""
             <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 15px; margin: 20px 0; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);'>
                 <h4 style='margin: 0; color: rgba(255,255,255,0.9); font-size: 18px;'>💰 Saldo Atual</h4>
@@ -305,7 +301,6 @@ def dashboard_screen():
             </div>
         """, unsafe_allow_html=True)
         
-        # Quarta linha - Data de Cadastro
         st.markdown(f"""
             <div style='background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #d62728; margin-bottom: 10px;'>
                 <h4 style='margin: 0; color: #666; font-size: 14px;'>📅 Data de Cadastro</h4>
